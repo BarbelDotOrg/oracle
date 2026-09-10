@@ -1,0 +1,20 @@
+[package]
+name = "oracle"
+description = "A tool to"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1"
+dirs = "7"
+clap = { version = "4", features = ["derive"] }
+clap_complete = "4"
+serde = { version = "1", features = ["derive"] }
+ron = "0.12"
+libcosmic = { git = "https://github.com/pop-os/libcosmic.git", features = ["winit", "tokio", "wgpu"] }
+
+[build-dependencies]
+dirs = "7"
+clap = { version = "4", features = ["derive"] }
+clap_complete = "4"
+serde = { version = "1", features = ["derive"] }
