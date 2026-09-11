@@ -4,12 +4,15 @@ pub mod core;
 pub mod fish;
 pub mod shell;
 pub mod state;
+pub mod ui;
 
 use crate::core::run_cli;
 use clap::{CommandFactory, Parser};
 use clap_complete::{Generator, generate};
 use cli::{Cli, Commands};
 use std::io;
+use cosmic::app::Settings;
+use crate::ui::app::OracleApp;
 
 fn print_completions<G: Generator>(generator: G, cmd: &mut clap::Command) {
     generate(
@@ -31,7 +34,8 @@ fn main() {
 
     match cli.command {
         None => {
-            todo!("launch gui")
+            // no command, its ui then
+            cosmic::app::run::<OracleApp>(Settings::default(), ()).unwrap();
         }
         Some(_) => run_cli(cli),
     }

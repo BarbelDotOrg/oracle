@@ -50,8 +50,6 @@ impl State {
         value: &str,
         delimitator: char,
     ) -> anyhow::Result<()> {
-
-
         Ok(())
     }
 

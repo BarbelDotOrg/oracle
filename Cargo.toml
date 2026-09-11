@@ -4,6 +4,9 @@ description = "A tool to"
 version = "0.1.0"
 edition = "2024"
 
+[profile.release]
+strip = true
+
 [dependencies]
 anyhow = "1"
 dirs = "7"
