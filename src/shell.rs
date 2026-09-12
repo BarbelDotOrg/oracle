@@ -1,7 +1,7 @@
 use clap::ValueEnum;
 use serde::{Deserialize, Serialize};
 
-#[derive(Copy, Clone, Serialize, Deserialize, PartialEq, Eq, Hash, ValueEnum)]
+#[derive(Copy, Clone, Serialize, Deserialize, PartialEq, Eq, Hash, ValueEnum, Debug)]
 pub enum Shell {
     Bash,
     Zsh,

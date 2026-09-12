@@ -32,6 +32,13 @@ pub enum Commands {
         name: String,
     },
 
+    /// List all env variables managed by the tool
+    List {
+        /// List for all shells and not just for the current (or forced) one
+        #[arg(short, long, default_value = "false")]
+        all_shells: bool,
+    },
+
     /// Remove an environment variable
     Remove {
         /// Name of the variable to remove

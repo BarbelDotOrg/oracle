@@ -1,24 +1,34 @@
 use crate::shell::Shell;
 use anyhow::anyhow;
+use clap::ValueEnum;
 use cosmic::iced::core::svg::Data::Path;
 use ron::ser::PrettyConfig;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use std::fs::File;
+use std::fs::{File, create_dir_all};
 use std::io::Write;
 use std::path::PathBuf;
 
-#[derive(Serialize, Deserialize, Default)]
+#[cfg(not(windows))]
+const DEFAULT_DELIM: char = ':';
+
+#[cfg(windows)]
+const DEFAULT_DELIM: char = ';';
+
+#[derive(Serialize, Deserialize)]
 pub struct State {
     pub vars: HashMap<Shell, HashMap<String, String>>,
 }
 
 impl State {
     pub fn save(&self) -> anyhow::Result<()> {
-        let cfg_path = dirs::config_dir()
-            .ok_or(anyhow!("todo err message"))?
-            .join("oracle")
-            .join("state.ron");
+        let cfg_dir = dirs::config_dir()
+            .ok_or(anyhow!("Couldnt find config dir (???)"))?
+            .join("oracle");
+
+        create_dir_all(&cfg_dir)?;
+
+        let cfg_path = cfg_dir.join("state.ron");
         let mut file = File::create(cfg_path)?;
         let serialized = ron::ser::to_string_pretty(self, PrettyConfig::default())?;
         file.write(serialized.as_bytes())?;
@@ -53,6 +63,17 @@ impl State {
         Ok(())
     }
 
+    pub fn pathlike_parts(&self, shell: Shell, key: &str) -> Option<Vec<String>> {
+        match self.vars.get(&shell).unwrap().get(key) {
+            Some(val) => Some(
+                val.split(DEFAULT_DELIM)
+                    .map(|s| s.to_string())
+                    .collect::<Vec<_>>(),
+            ),
+            None => None,
+        }
+    }
+
     pub fn remove(&mut self, shell: Shell, key: &str) -> bool {
         let mut contains = false;
         if let Some(vars) = self.vars.get_mut(&shell) {
@@ -60,5 +81,15 @@ impl State {
             vars.remove(key);
         }
         contains
+    }
+}
+
+impl Default for State {
+    fn default() -> Self {
+        let mut vars: HashMap<Shell, HashMap<String, String>> = HashMap::new();
+        for shell in Shell::value_variants() {
+            vars.insert(*shell, HashMap::new());
+        }
+        Self { vars }
     }
 }
