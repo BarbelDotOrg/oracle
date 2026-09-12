@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Oracle
+GenericName=Environment Variable Manager
+Comment=A tool to manage environment variables
+Exec=oracle
+Icon=oracle
+Terminal=false
+Categories=Utility;System;Settings;
+Keywords=environment;variables;env;config;
+StartupNotify=true
+StartupWMClass=oracle

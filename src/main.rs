@@ -1,18 +1,18 @@
 pub mod bashlike;
 pub mod cli;
 pub mod core;
-pub mod fish;
+pub mod pathlike;
 pub mod shell;
 pub mod state;
 pub mod ui;
 
 use crate::core::run_cli;
+use crate::ui::app::OracleApp;
 use clap::{CommandFactory, Parser};
 use clap_complete::{Generator, generate};
 use cli::{Cli, Commands};
-use std::io;
 use cosmic::app::Settings;
-use crate::ui::app::OracleApp;
+use std::io;
 
 fn print_completions<G: Generator>(generator: G, cmd: &mut clap::Command) {
     generate(

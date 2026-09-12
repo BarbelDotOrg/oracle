@@ -10,7 +10,11 @@ pub struct Cli {
 
     /// Force a specific shell instead of auto-detecting it
     #[arg(short, long)]
-    pub forced_shell: Option<Shell>,
+    pub shell: Option<Shell>,
+
+    /// Force a specific delimitator for path-like variables instead of auto-detecting it (make sure you know what you're doing)
+    #[arg(short, long)]
+    pub delimitator: Option<char>,
 }
 
 #[derive(Subcommand)]
@@ -33,11 +37,7 @@ pub enum Commands {
     },
 
     /// List all env variables managed by the tool
-    List {
-        /// List for all shells and not just for the current (or forced) one
-        #[arg(short, long, default_value = "false")]
-        all_shells: bool,
-    },
+    List,
 
     /// Remove an environment variable
     Remove {

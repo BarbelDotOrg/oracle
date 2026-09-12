@@ -3,6 +3,7 @@ name = "oracle"
 description = "A tool to manage environment variables"
 version = "0.1.0"
 edition = "2024"
+license = "AGPL-3"
 
 [profile.release]
 strip = true
