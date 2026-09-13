@@ -7,7 +7,7 @@ license = "AGPL-3"
 
 [profile.release]
 strip = true
-lto = "fat"
+lto = "thin"
 codegen-units = 1
 panic = "abort"
 
@@ -18,6 +18,11 @@ clap = { version = "4", features = ["derive"] }
 clap_complete = "4"
 serde = { version = "1", features = ["derive"] }
 ron = "0.12"
+
+[target.'cfg(windows)'.dependencies]
+libcosmic = { git = "https://github.com/pop-os/libcosmic.git", features = ["winit", "tokio", "wgpu"], default-features = false }
+
+[target.'cfg(not(windows))'.dependencies]
 libcosmic = { git = "https://github.com/pop-os/libcosmic.git", features = ["winit", "tokio", "wgpu"] }
 
 [build-dependencies]
