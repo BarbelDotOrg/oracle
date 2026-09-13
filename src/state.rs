@@ -14,6 +14,12 @@ pub enum SetResult {
     Override,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub enum VarKind {
+    Simple,
+    Pathlike,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub enum ManagedVariable {
     Simple(String),
@@ -143,6 +149,52 @@ impl State {
             return Some(ManagedVariableSource::Overrides(val));
         }
         None
+    }
+
+    /// Look up a variable by key wherever it lives, returning enough info
+    /// to prefill the edit dialog.
+    pub fn describe(&self, key: &str) -> (VarKind, String, Vec<String>) {
+        if let Some(var) = self.vars.get(key) {
+            return match var {
+                ManagedVariable::Simple(s) => (VarKind::Simple, s.clone(), vec![]),
+                ManagedVariable::Pathlike(v) => (VarKind::Pathlike, String::new(), v.clone()),
+            };
+        }
+        if let Some(adds) = self.pathlike_adds.get(key) {
+            return (VarKind::Pathlike, String::new(), adds.clone());
+        }
+        if let Some(v) = self.overrides.get(key) {
+            return (VarKind::Simple, v.clone(), vec![]);
+        }
+        if let Some(v) = self.env_vars.get(key) {
+            return (VarKind::Simple, v.clone(), vec![]);
+        }
+        (VarKind::Simple, String::new(), vec![])
+    }
+
+    /// Save a variable, whether newly created or edited. System vars can
+    /// only be represented as an override (a single string), so pathlike
+    /// parts get joined with ':' in that case.
+    pub fn save_var(&mut self, key: &str, kind: VarKind, simple_value: &str, pathlike_parts: &[String]) {
+        // Clear out whatever this key was previously stored as, so editing
+        // never leaves stale data behind under a different bucket.
+        self.vars.remove(key);
+        self.pathlike_adds.remove(key);
+
+        if self.env_vars.contains_key(key) {
+            let value = match kind {
+                VarKind::Simple => simple_value.to_string(),
+                VarKind::Pathlike => pathlike_parts.join(":"),
+            };
+            self.overrides.insert(key.to_string(), value);
+        } else {
+            self.overrides.remove(key);
+            let var = match kind {
+                VarKind::Simple => ManagedVariable::Simple(simple_value.to_string()),
+                VarKind::Pathlike => ManagedVariable::Pathlike(pathlike_parts.to_vec()),
+            };
+            self.vars.insert(key.to_string(), var);
+        }
     }
 }
 
