@@ -13,7 +13,7 @@ impl Shell {
     #[cfg(unix)]
     pub fn current() -> Option<Shell> {
         if let Some(s) = std::env::var_os("SHELL") {
-            // most of the times when $SHELL is defines its well defined
+            // most of the times when $SHELL is defined its well defined
             // so we dont run the other cases
             return Self::shell_from_path(s.to_str()?);
         }

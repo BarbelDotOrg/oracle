@@ -98,7 +98,7 @@ impl State {
             // it needs $VAR without quotes to expand, so build this one differently:
             match shell {
                 Shell::Fish => contents.push_str(&format!("set -gx {k} \"${k}:{}\"\n", v.join(":"))),
-                _ => contents.push_str(&format!("export {k}={k}:{}\n", v.join(":"))),
+                _ => contents.push_str(&format!("export {k}=${k}:{}\n", v.join(":"))),
             }
             let _ = joined; // just here to show the shape; drop if unused
         }

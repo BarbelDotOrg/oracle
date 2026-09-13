@@ -1,15 +1,17 @@
 use cosmic::{Application, Core, Element};
 use cosmic::app::Task;
 use crate::state::State;
+use cosmic::iced::widget as iced_widget; // widget::Id lives here
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Message {
-
+    TableSynced(iced_widget::scrollable::AbsoluteOffset),
+    SortBy(usize),
 }
 
 pub struct OracleApp {
     core: Core,
-    state: State,
+    pub(crate) state: State,
 }
 
 impl Application for OracleApp {

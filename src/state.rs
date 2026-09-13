@@ -30,7 +30,7 @@ pub enum ManagedVariableSource {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct State {
     #[serde(skip, default = "current_env_vars")]
-    env_vars: HashMap<String, String>,
+    pub(crate) env_vars: HashMap<String, String>,
     pub vars: HashMap<String, ManagedVariable>,
     pub pathlike_adds: HashMap<String, Vec<String>>,
     pub overrides: HashMap<String, String>,
